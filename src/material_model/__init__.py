@@ -10,7 +10,8 @@ from aac.lang.definitions.definition import Definition
 from aac.plugins import hookimpl
 from aac.plugins.plugin import Plugin, DefinitionValidationContribution
 from aac.plugins._common import get_plugin_definitions_from_yaml
-from material_model.material_model_impl import plugin_name, gen_bom
+from aac.plugins.validators._common import get_plugin_validations_from_definitions
+from material_model.material_model_impl import PLUGIN_NAME, gen_bom
 from material_model.referenced_material_exists import MATERIAL_REF_VALIDATOR_NAME, validate_referenced_materials
 from material_model.no_circular_references import CIRCULAR_REF_VALIDATOR_NAME, validate_no_circluar_material_refs
 
@@ -24,9 +25,11 @@ def get_plugin() -> Plugin:
     Returns:
         A collection of information about the plugin and what it contributes.
     """
-    plugin = Plugin(plugin_name)
+    plugin = Plugin(PLUGIN_NAME)
     plugin.register_commands(_get_plugin_commands())
-    plugin.register_definitions(_get_plugin_definitions())
+    plugin_definitions = _get_plugin_definitions()
+    plugin.register_definitions(plugin_definitions)
+    plugin.register_definition_validations(_get_validations(plugin_definitions))
     return plugin
 
 def _get_plugin_commands():
@@ -62,6 +65,7 @@ def _get_validations(plugin_definitions: list[Definition]) -> list[DefinitionVal
     no_circular_refs_validation_definition = get_definition_by_name(CIRCULAR_REF_VALIDATOR_NAME, plugin_definitions)
 
     validations = []
+
     if referenced_material_validation_definition and no_circular_refs_validation_definition:
         referenced_material_validation = DefinitionValidationContribution(referenced_material_validation_definition.name, referenced_material_validation_definition, validate_referenced_materials)
         circular_ref_validation = DefinitionValidationContribution(no_circular_refs_validation_definition.name, no_circular_refs_validation_definition, validate_no_circluar_material_refs)

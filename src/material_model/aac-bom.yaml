@@ -218,7 +218,7 @@ schema:
     - name: assemblies
       type: AssemblyRef[]
       description: A list of assemblies that contribute to the site.
-    - name: sub-site
+    - name: sub-sites
       type: SiteRef[]
       description: A list of sites that contribute to this site (i.e. buildings on a campus, rooms in a building).
     - name: need_date

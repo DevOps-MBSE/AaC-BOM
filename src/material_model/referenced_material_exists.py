@@ -1,5 +1,4 @@
 """AaC validator implementation module for specification req reference ids."""
-import traceback
 import logging
 
 from aac.lang.definitions.definition import Definition
@@ -12,7 +11,7 @@ MATERIAL_REF_VALIDATOR_NAME = "Referenced materials exist"
 
 ALL_PART_NAMES = []
 ALL_ASSEMBLY_NAMES = []
-ALL_DEPLOYMENT_NAMES = []
+ALL_SITE_NAMES = []
 
 
 def validate_referenced_materials(
@@ -35,35 +34,24 @@ def validate_referenced_materials(
     """
     findings = ValidatorFindings()
 
-    # this feels like a hack, but it does prevent the validator from repeatedly running on the same data sets
-    if len(ALL_PART_NAMES) + len(ALL_ASSEMBLY_NAMES) + len(ALL_DEPLOYMENT_NAMES) > 0:
-        return ValidatorResult([definition_under_test], findings)
+    _get_all_material_names(language_context)
 
-    try:
+    part_ref_definition = language_context.get_definition_by_name("PartRef")
+    assembly_ref_definition = language_context.get_definition_by_name("AssemblyRef")
+    site_ref_definition = language_context.get_definition_by_name("SiteRef")
 
-        _get_all_material_names(language_context)
+    assembly_roots = language_context.get_definitions_by_root_key("assembly")
+    site_roots = language_context.get_definitions_by_root_key("site")
+    for root in assembly_roots + site_roots:
 
-        part_ref_definition = language_context.get_definition_by_name("PartRef")
-        assembly_ref_definition = language_context.get_definition_by_name("AssemblyRef")
-        deployment_ref_definition = language_context.get_definition_by_name("DeploymentRef")
+        # check part refs
+        _check_refs("part-ref", ALL_PART_NAMES, root, definition_under_test, part_ref_definition, language_context, findings)
 
-        assembly_roots = language_context.get_definitions_by_root_key("assembly")
-        deployment_roots = language_context.get_definitions_by_root_key("deployment")
-        for root in assembly_roots + deployment_roots:
+        # check assembly refs
+        _check_refs("assembly-ref", ALL_ASSEMBLY_NAMES, root, definition_under_test, assembly_ref_definition, language_context, findings)
 
-            # check part refs
-            _check_refs("part-ref", ALL_PART_NAMES, root, definition_under_test, part_ref_definition, language_context, findings)
-
-            # check assembly refs
-            _check_refs("assembly-ref", ALL_ASSEMBLY_NAMES, root, definition_under_test, assembly_ref_definition, language_context, findings)
-
-            # check deployment refs
-            _check_refs("deployment-ref", ALL_DEPLOYMENT_NAMES, root, definition_under_test, deployment_ref_definition, language_context, findings)
-
-    except Exception as e:
-        print("Caught an exception in validate_referenced_materials")
-        print(e)
-        print(traceback.format_exc())
+        # check site refs
+        _check_refs("site-ref", ALL_SITE_NAMES, root, definition_under_test, site_ref_definition, language_context, findings)
 
     return ValidatorResult([definition_under_test], findings)
 
@@ -82,20 +70,24 @@ def _check_refs(ref_type, name_list, root, definition_under_test, ref_definition
 
 
 def _get_all_material_names(language_context):
-    if len(ALL_PART_NAMES) == 0:  # don't repeat this for every validator invocation
-        part_roots = language_context.get_definitions_by_root_key("part")
-        for part in part_roots:
-            ALL_PART_NAMES.append(part.name)
 
-    if len(ALL_ASSEMBLY_NAMES) == 0:  # don't repeat this for every validator invocation
-        assembly_roots = language_context.get_definitions_by_root_key("assembly")
-        for assembly in assembly_roots:
-            ALL_ASSEMBLY_NAMES.append(assembly.name)
+    # Note:  Originally I had attempted to cache data and only populate the ALL_CAPS_LISTS one time, but found this caused errors in unit tests across tests.
+    #   This was resolved by always getting material names for each run of the validator and clearing each list just as an additional precaution.
+    
+    ALL_PART_NAMES.clear()
+    part_roots = language_context.get_definitions_by_root_key("part")
+    for part in part_roots:
+        ALL_PART_NAMES.append(part.name)
 
-    if len(ALL_DEPLOYMENT_NAMES) == 0:  # don't repeat this for every validator invocation
-        deployment_roots = language_context.get_definitions_by_root_key("deployment")
-        for deployment in deployment_roots:
-            ALL_DEPLOYMENT_NAMES.append(deployment.name)
+    ALL_ASSEMBLY_NAMES.clear()
+    assembly_roots = language_context.get_definitions_by_root_key("assembly")
+    for assembly in assembly_roots:
+        ALL_ASSEMBLY_NAMES.append(assembly.name)
+
+    ALL_SITE_NAMES.clear()
+    site_roots = language_context.get_definitions_by_root_key("site")
+    for site in site_roots:
+        ALL_SITE_NAMES.append(site.name)
 
 
 def _definition_name_exists(name, definition_list):

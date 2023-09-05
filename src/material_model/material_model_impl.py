@@ -11,7 +11,7 @@ from aac.plugins.plugin_execution import PluginExecutionResult, plugin_result
 from aac.validate import validated_source
 from aac.lang.definitions.definition import Definition
 
-plugin_name = "Material-Model"
+PLUGIN_NAME = "Material-Model"
 
 
 SITES = {}
@@ -52,7 +52,7 @@ def gen_bom(architecture_file: str, output_directory: str) -> PluginExecutionRes
 
         return f"{len(line_items)} BOM line items written to {output_path}"
 
-    with plugin_result(plugin_name, generate_bom) as result:
+    with plugin_result(PLUGIN_NAME, generate_bom) as result:
         return result
 
 

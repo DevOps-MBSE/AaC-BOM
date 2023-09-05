@@ -9,7 +9,7 @@ from aac.plugins.validators import ValidatorFindings, ValidatorResult
 
 CIRCULAR_REF_VALIDATOR_NAME = "No circular material references"
 
-deployment_tree = {}
+site_tree = {}
 assembly_tree = {}
 
 
@@ -33,50 +33,45 @@ def validate_no_circluar_material_refs(
     """
     findings = ValidatorFindings()
 
-    try:
+    _get_site_tree(language_context)
+    _get_assembly_tree(language_context)
 
-        if len(assembly_tree.keys()) + len(deployment_tree.keys()) > 0:
-            # already done, so skip
-            return ValidatorResult([definition_under_test], findings)
-        else:
+    # check sites for cycles
+    site_roots = language_context.get_definitions_by_root_key("site")
+    for root in site_roots:
+        dupe = _look_for_dupes(root.name, [], site_tree)
+        if dupe:
+            lexeme = root.get_lexeme_with_value(dupe)
+            message = f"Circular site reference detected for {dupe} in {lexeme.source} on line {lexeme.location.line + 1}"
 
-            _get_deployment_tree(language_context)
-            _get_assembly_tree(language_context)
+            findings.add_error_finding(definition_under_test, message, CIRCULAR_REF_VALIDATOR_NAME, lexeme)
+            logging.debug(message)
 
-            # check deployments for cycles
-            deployment_roots = language_context.get_definitions_by_root_key("deployment")
-            for root in deployment_roots:
+    # check assemblies for cycles
+    assembly_roots = language_context.get_definitions_by_root_key("assembly")
+    for root in assembly_roots:
 
-                dupe = _look_for_dupes(root.name, [], deployment_tree)
-                if dupe:
-                    lexeme = root.get_lexeme_with_value(dupe)
-                    message = f"Circular deployment reference detected for {dupe} in {lexeme.source} on line {lexeme.location.line + 1}"
+        dupe = _look_for_dupes(root.name, [], assembly_tree)
+        if dupe:
+            lexeme = root.get_lexeme_with_value(dupe)
+            message = f"Circular assembly reference detected for {dupe} in {lexeme.source} on line {lexeme.location.line + 1}"
 
-                    findings.add_error_finding(definition_under_test, message, CIRCULAR_REF_VALIDATOR_NAME, lexeme)
-                    logging.debug(message)
-
-            # check assemblies for cycles
-            assembly_roots = language_context.get_definitions_by_root_key("assembly")
-            for root in assembly_roots:
-
-                dupe = _look_for_dupes(root.name, [], assembly_tree)
-                if dupe:
-                    lexeme = root.get_lexeme_with_value(dupe)
-                    message = f"Circular assembly reference detected for {dupe} in {lexeme.source} on line {lexeme.location.line + 1}"
-
-                    findings.add_error_finding(definition_under_test, message, CIRCULAR_REF_VALIDATOR_NAME, lexeme)
-                    logging.debug(message)
-
-    except Exception as e:
-        print("Caught an exception in validate_no_circluar_material_refs")
-        print(e)
-        print(traceback.format_exc())
+            findings.add_error_finding(definition_under_test, message, CIRCULAR_REF_VALIDATOR_NAME, lexeme)
+            logging.debug(message)
 
     return ValidatorResult([definition_under_test], findings)
 
 
 def _look_for_dupes(key, visited, pool):
     """Return duplicate name if found, otherwise None."""
+
+    # key is the name we're evaluating
+    # visited is the history of names we've alredy evaluated
+    # pool is the dict of name to list of sub-items
+
+    # work from a given key and use the pool to walk a depth-first-search through the pool 
+    #   to evaluate the "parent" through all the "children" recursively
+
     if key in visited:
         return key
 
@@ -88,22 +83,32 @@ def _look_for_dupes(key, visited, pool):
     return None
 
 
-def _get_deployment_tree(language_context):
+def _get_site_tree(language_context):
 
-    deployment_roots = language_context.get_definitions_by_root_key("deployment")
-    for deployment in deployment_roots:
-        if "sub-deployments" in deployment.structure["deployment"].keys():
+    # Unit tests show that errors can occur across multiple invocations, so clear the tree to avoid data corruption between runs.
+    # TODO monitor this for potential performance slow-downs
+    site_tree.clear()
+
+    # creates a dict keyed by the site name with a value containing the list of sub-sites (or empty list)
+    site_roots = language_context.get_definitions_by_root_key("site")
+    for site in site_roots:
+        if "sub-sites" in site.structure["site"].keys():
             subs = []
-            for sub in deployment.structure["deployment"]["sub-deployments"]:
-                subs.append(sub["deployment-ref"])
-            deployment_tree[deployment.name] = subs
+            for sub in site.structure["site"]["sub-sites"]:
+                subs.append(sub["site-ref"])
+            site_tree[site.name] = subs
 
         else:
-            deployment_tree[deployment.name] = []
+            site_tree[site.name] = []
 
 
 def _get_assembly_tree(language_context):
 
+    # Unit tests show that errors can occur across multiple invocations, so clear the tree to avoid data corruption between runs.
+    # TODO monitor this for potential performance slow-downs
+    assembly_tree.clear()
+
+    # creates a dict keyed by assembly name with a value listing sub-assemblies (or empty list)
     assembly_roots = language_context.get_definitions_by_root_key("assembly")
     for assembly in assembly_roots:
         if "sub-assemblies" in assembly.structure["assembly"].keys():
