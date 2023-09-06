@@ -85,7 +85,7 @@ def _look_for_dupes(key, visited, pool):
 def _get_site_tree(language_context):
 
     # Unit tests show that errors can occur across multiple invocations, so clear the tree to avoid data corruption between runs.
-    # TODO monitor this for potential performance slow-downs
+    # monitor this for potential performance slow-downs
     site_tree.clear()
 
     # creates a dict keyed by the site name with a value containing the list of sub-sites (or empty list)
@@ -104,7 +104,7 @@ def _get_site_tree(language_context):
 def _get_assembly_tree(language_context):
 
     # Unit tests show that errors can occur across multiple invocations, so clear the tree to avoid data corruption between runs.
-    # TODO monitor this for potential performance slow-downs
+    # monitor this for potential performance slow-downs
     assembly_tree.clear()
 
     # creates a dict keyed by assembly name with a value listing sub-assemblies (or empty list)
