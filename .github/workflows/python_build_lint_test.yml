@@ -37,9 +37,9 @@ jobs:
         run: |
           sudo apt-get install tree
           tree .
-          
+
       - name: Upload Python Wheel
         uses: actions/upload-artifact@v3
         with:
           name: aac-bom_wheel
-          path: dist/
+          path: src/dist/
