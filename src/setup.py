@@ -20,6 +20,7 @@ test_dependencies = [
     "flake8-fixme ~= 1.1.1",
     "flake8-eradicate ~= 1.2.0",
     "flake8-assertive ~= 1.3.0",
+    "pipdeptree ~= 2.13.0",
 ]
 
 setup(
