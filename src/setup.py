@@ -28,7 +28,8 @@ setup(
     package_data={"": ["*.aac", "*.jinja2", "*.yaml"]},
     install_requires=runtime_dependencies,
     extras_require={
-        "test": test_dependencies
+        "test": test_dependencies,
+        "all": test_dependencies
     },
     entry_points={
         "aac": ["Material-Model=material_model"],
