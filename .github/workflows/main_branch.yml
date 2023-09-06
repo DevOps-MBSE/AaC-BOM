@@ -19,7 +19,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
             name: aac_wheel
-            path: python/dist/
+            path: dist/
 
     #   - name: Publish distribution to PyPI
     #     uses: pypa/gh-action-pypi-publish@master
