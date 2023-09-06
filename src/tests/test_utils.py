@@ -4,6 +4,7 @@ from tempfile import NamedTemporaryFile, TemporaryDirectory
 
 from aac.lang.active_context_lifecycle_manager import get_active_context
 from aac.io.parser import parse
+from aac.validate import validated_definitions
 from aac.plugins.validators import ValidatorResult
 
 
@@ -26,6 +27,12 @@ def run_validator(validator_under_test, yaml_str, root_type, root_name) -> Valid
     test_active_context.clear()
 
     return result
+
+
+def run_core_validate(yaml_str) -> ValidatorResult:
+
+    with validated_definitions(parse(yaml_str)) as result:
+        return result
 
 
 # Test helper functions
