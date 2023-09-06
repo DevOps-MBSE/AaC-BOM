@@ -8,7 +8,7 @@ on:
 jobs:
   build_python_artifacts:
     name: Python Build
-    uses: ./.github/workflows/python-build_lint_test.yml
+    uses: ./.github/workflows/python_build_lint_test.yml
 
   deploy_artifacts:
     name: Deploy Artifacts
