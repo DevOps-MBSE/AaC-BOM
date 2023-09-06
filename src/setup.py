@@ -12,6 +12,7 @@ runtime_dependencies = [
 ]
 
 test_dependencies = [
+    "tox >= 3.24",
     "nose2 ~= 0.10.0",
     "coverage ~= 6.0",
     "flake8 ~= 4.0",
