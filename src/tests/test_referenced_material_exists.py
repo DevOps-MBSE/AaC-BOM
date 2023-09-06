@@ -30,12 +30,6 @@ class TestReferencedMaterialValidator(TestCase):
 
         self.assertFalse(result.is_valid(), "validate_referenced_materials did not return a validation failure for bad part reference as expected.")
 
-    # def test_core_validate_bad_part_reference(self):
-
-    #     result = run_core_validate(BAD_PART_MATERIAL_REFERENCE)
-
-    #     self.assertFalse(result.is_valid(), "Core validate did not return a validation failure for bad part reference as expected.")
-
     def test_bad_assembly_reference(self):
 
         result = run_validator(validate_referenced_materials, BAD_ASSEMBLY_MATERIAL_REFERENCE, "assembly", "My_New_Apartment")

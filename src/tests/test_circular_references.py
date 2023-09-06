@@ -33,12 +33,6 @@ class TestCircularReferencesValicator(TestCase):
 
         if expected_substring not in result.get_messages_as_string():
             raise AssertionError(f"validate_no_circular_material_refs validity was correct for circular site but error message was incorrect. Expected: {expected_substring}  Actual: {result.get_messages_as_string()}")
-        
-    # def test_core_validate_circular_site_reference(self):
-
-    #     result = run_core_validate(CIRCULAR_SITE_REF)
-
-    #     self.assertFalse(result.is_valid(), "core validate did not return a validation failure for circular site reference as expected.")
 
     def test_circular_assembly_reference(self):
 
