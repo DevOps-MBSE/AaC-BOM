@@ -30,7 +30,11 @@ test_dependencies = [
 
 setup(
     version="0.0.1",
-    name="AaC-BOM",
+    name="aac-bom",
+    description=(
+        "Architecture-as-Code (AaC) plugin for material modeling.  Rigorously track your sites, assemblies, and parts."
+    ),
+    license="MIT",
     packages=find_packages(where=".", exclude="tests"),
     package_data={"": ["*.aac", "*.jinja2", "*.yaml"]},
     install_requires=runtime_dependencies,

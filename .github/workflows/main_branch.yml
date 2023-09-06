@@ -7,13 +7,13 @@ on:
 
 jobs:
   build_python_artifacts:
-    name: Python Build
+    name: Python Build Lint and Test
     uses: ./.github/workflows/python_build_lint_test.yml
 
   deploy_artifacts:
     name: Deploy Artifacts
     runs-on: ubuntu-20.04
-    # needs: build_python_artifacts
+    needs: build_python_artifacts
     permissions:
       # Important:  This permission is mandatory for trusted publishing
       id-token: write
