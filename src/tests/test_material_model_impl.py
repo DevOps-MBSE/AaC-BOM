@@ -3,12 +3,8 @@ from unittest import TestCase
 from tempfile import TemporaryDirectory
 
 from material_model.material_model_impl import gen_bom
-from material_model.referenced_material_exists import validate_referenced_materials
-from material_model.no_circular_references import validate_no_circluar_material_refs
 
 from aac.plugins.plugin_execution import PluginExecutionStatusCode
-from aac.lang.active_context_lifecycle_manager import get_active_context
-from aac.io.parser import parse
 
 from test_utils import temporary_test_file, new_working_dir
 
@@ -40,4 +36,3 @@ class TestMaterialModel(TestCase):
                 self.assertIn(
                     "My_New_Apartment / Kitchen / Appliances / Blender,Grind House,Liquificationinator 1000,7 setting industrial strength blender with pulse,1,99.99,99.99,,Crystal Terrace Apartments Unit 1234 / The room with the sink and the stove\n",
                     bom_lines, "Expected line for blender not found in BOM csv")
-

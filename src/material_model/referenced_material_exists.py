@@ -73,7 +73,7 @@ def _get_all_material_names(language_context):
 
     # Note:  Originally I had attempted to cache data and only populate the ALL_CAPS_LISTS one time, but found this caused errors in unit tests across tests.
     #   This was resolved by always getting material names for each run of the validator and clearing each list just as an additional precaution.
-    
+
     ALL_PART_NAMES.clear()
     part_roots = language_context.get_definitions_by_root_key("part")
     for part in part_roots:

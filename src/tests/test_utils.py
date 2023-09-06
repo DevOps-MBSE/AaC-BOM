@@ -4,7 +4,8 @@ from tempfile import NamedTemporaryFile, TemporaryDirectory
 
 from aac.lang.active_context_lifecycle_manager import get_active_context
 from aac.io.parser import parse
-from aac.plugins.validators import ValidatorFindings, ValidatorResult
+from aac.plugins.validators import ValidatorResult
+
 
 def run_validator(validator_under_test, yaml_str, root_type, root_name) -> ValidatorResult:
 
@@ -20,11 +21,12 @@ def run_validator(validator_under_test, yaml_str, root_type, root_name) -> Valid
 
     target_schema_definition = test_active_context.get_definition_by_name(root_type)
 
-    result =  validator_under_test(model_root_definition, target_schema_definition, test_active_context)
+    result = validator_under_test(model_root_definition, target_schema_definition, test_active_context)
 
     test_active_context.clear()
 
     return result
+
 
 # Test helper functions
 @contextmanager
@@ -57,6 +59,7 @@ def temporary_test_file(content: str, **extra_file_attrs):
             file.seek(0)
 
             yield file
+
 
 @contextmanager
 def new_working_dir(directory):

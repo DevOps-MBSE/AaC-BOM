@@ -1,0 +1,30 @@
+# This workflow is only intended to run when a pull-request is merged into the main branch
+name: Main branch Workflow
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build_python_artifacts:
+    name: Python Build
+    uses: ./.github/workflows/python-build_lint_test.yml
+
+  deploy_artifacts:
+    name: Deploy Artifacts
+    runs-on: ubuntu-20.04
+    needs: build_python_artifacts
+    steps:
+      - name: Download Python Wheel
+        uses: actions/download-artifact@v3
+        with:
+            name: aac_wheel
+            path: python/dist/
+
+    #   - name: Publish distribution to PyPI
+    #     uses: pypa/gh-action-pypi-publish@master
+    #     with:
+    #         password: ${{ secrets.PYPI_API_TOKEN }}
+    #         packages_dir: python/dist/
+
+  

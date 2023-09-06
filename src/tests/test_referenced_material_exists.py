@@ -24,20 +24,18 @@ class TestReferencedMaterialValidator(TestCase):
         result = run_validator(validate_referenced_materials, BAD_PART_MATERIAL_REFERENCE, "part", "My_New_Apartment")
 
         if result.is_valid():
-            raise AssertionError(f"validate_referenced_materials did not return a validation failure for bad part reference as expected.")
+            raise AssertionError("validate_referenced_materials did not return a validation failure for bad part reference as expected.")
 
     def test_bad_assembly_reference(self):
 
         result = run_validator(validate_referenced_materials, BAD_ASSEMBLY_MATERIAL_REFERENCE, "assembly", "My_New_Apartment")
 
         if result.is_valid():
-            raise AssertionError(f"validate_referenced_materials did not return a validation failure for bad assembly reference as expected.")
+            raise AssertionError("validate_referenced_materials did not return a validation failure for bad assembly reference as expected.")
 
     def test_bad_site_reference(self):
 
         result = run_validator(validate_referenced_materials, BAD_SITE_MATERIAL_REFERENCE, "site", "My_New_Apartment")
 
         if result.is_valid():
-            raise AssertionError(f"validate_referenced_materials did not return a validation failure for bad site reference as expected.")
-
-
+            raise AssertionError("validate_referenced_materials did not return a validation failure for bad site reference as expected.")

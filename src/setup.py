@@ -23,7 +23,7 @@ test_dependencies = [
 
 setup(
     version="0.0.1",
-    name="Material-Model",
+    name="AaC-BOM",
     packages=find_packages(where=".", exclude="tests"),
     package_data={"": ["*.aac", "*.jinja2", "*.yaml"]},
     install_requires=runtime_dependencies,

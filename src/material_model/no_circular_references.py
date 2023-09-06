@@ -1,5 +1,4 @@
 """AaC validator implementation module for specification req reference ids."""
-import traceback
 import logging
 
 from aac.lang.definitions.definition import Definition
@@ -69,7 +68,7 @@ def _look_for_dupes(key, visited, pool):
     # visited is the history of names we've alredy evaluated
     # pool is the dict of name to list of sub-items
 
-    # work from a given key and use the pool to walk a depth-first-search through the pool 
+    # work from a given key and use the pool to walk a depth-first-search through the pool
     #   to evaluate the "parent" through all the "children" recursively
 
     if key in visited:
