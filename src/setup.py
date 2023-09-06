@@ -11,6 +11,12 @@ runtime_dependencies = [
     "aac ~= 0.2.0"
 ]
 
+development_dependencies = [
+    "pipdeptree ~= 2.13.0",
+    "wheel ~= 0.41.0",
+    "pip-tools >= 6.9.0",
+]
+
 test_dependencies = [
     "tox >= 3.24",
     "nose2 ~= 0.10.0",
@@ -20,7 +26,6 @@ test_dependencies = [
     "flake8-fixme ~= 1.1.1",
     "flake8-eradicate ~= 1.2.0",
     "flake8-assertive ~= 1.3.0",
-    "pipdeptree ~= 2.13.0",
 ]
 
 setup(
@@ -30,8 +35,9 @@ setup(
     package_data={"": ["*.aac", "*.jinja2", "*.yaml"]},
     install_requires=runtime_dependencies,
     extras_require={
+        "dev": development_dependencies,
         "test": test_dependencies,
-        "all": test_dependencies
+        "all": development_dependencies + test_dependencies,
     },
     entry_points={
         "aac": ["Material-Model=material_model"],

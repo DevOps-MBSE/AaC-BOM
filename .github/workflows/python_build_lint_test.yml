@@ -18,7 +18,7 @@ jobs:
         with:
           python-version: 3.9
 
-      - name: Install the AaC Package
+      - name: Install the AaC-BOM Package
         run: pip install -e .[all]
 
       - name: Lint with flake8
