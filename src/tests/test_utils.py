@@ -54,7 +54,7 @@ def temporary_test_file(content: str, **extra_file_attrs):
         new_directory = extra_file_attrs.get("dir") or temp_dir
         mode = extra_file_attrs.get("mode") or "w"
         extra_file_attrs |= {"dir": new_directory, "mode": mode}
-        with new_working_dir(new_directory), NamedTemporaryFile(**extra_file_attrs) as file:
+        with new_working_dir(new_directory), NamedTemporaryFile(suffix=".yaml", **extra_file_attrs) as file:
             file.write(content)
             file.seek(0)
 
