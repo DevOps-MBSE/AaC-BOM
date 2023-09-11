@@ -35,12 +35,6 @@ class TestCircularReferencesValidator(TestCase):
         except ValidationError:
             pass
 
-        # self.assertRaises(ValidationError, run_core_validate, CIRCULAR_SITE_REF)
-
-        # result = run_core_validate(CIRCULAR_SITE_REF)
-
-        # self.assertFalse(result.is_valid(), "core validate did not return a validation failure for circular site reference as expected.")
-
     def test_circular_site_reference(self):
 
         result = run_validator(validate_no_circluar_material_refs, CIRCULAR_SITE_REF, "site", "My_New_Apartment")

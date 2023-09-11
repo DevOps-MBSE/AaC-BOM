@@ -29,7 +29,7 @@ test_dependencies = [
 ]
 
 setup(
-    version="0.0.2",
+    version="0.0.4",
     name="aac-bom",
     description=(
         "Architecture-as-Code (AaC) plugin for material modeling.  Rigorously track your sites, assemblies, and parts."
