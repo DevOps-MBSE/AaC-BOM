@@ -1,5 +1,7 @@
 from unittest import TestCase
 
+from aac.validate._validation_error import ValidationError
+
 from material_model.no_circular_references import validate_no_circluar_material_refs
 
 from test_utils import run_validator, run_core_validate
@@ -9,7 +11,7 @@ from circular_site_ref import CIRCULAR_SITE_REF
 from circular_assembly_ref import CIRCULAR_ASSEMBLY_REF
 
 
-class TestCircularReferencesValicator(TestCase):
+class TestCircularReferencesValidator(TestCase):
 
     def test_no_circular_reference(self):
 
@@ -19,9 +21,25 @@ class TestCircularReferencesValicator(TestCase):
 
     def test_core_validate_no_circular_reference(self):
 
-        result = run_core_validate(VALID_MATERIAL_MODEL)
+        try:
+            result = run_core_validate(VALID_MATERIAL_MODEL)
+            self.assertTrue(result.is_valid(), f"Core validate function failed on a valid model. isValid = {result.is_valid()} Message = {result.get_messages_as_string()}")
+        except ValidationError:
+            self.fail(f"Unexpected validation error raised.  Received result: {result}")
 
-        self.assertTrue(result.is_valid(), f"Core validate function failed on a valid model. isValid = {result.is_valid()} Message = {result.get_messages_as_string()}")
+    def test_core_validate_circular_site_reference(self):
+
+        try:
+            result = run_core_validate(CIRCULAR_SITE_REF)
+            self.fail(f"Expected a validation error to be raised.  Received result: {result}")
+        except ValidationError:
+            pass
+
+        # self.assertRaises(ValidationError, run_core_validate, CIRCULAR_SITE_REF)
+
+        # result = run_core_validate(CIRCULAR_SITE_REF)
+
+        # self.assertFalse(result.is_valid(), "core validate did not return a validation failure for circular site reference as expected.")
 
     def test_circular_site_reference(self):
 

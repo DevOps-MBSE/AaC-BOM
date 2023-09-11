@@ -1,5 +1,7 @@
 from unittest import TestCase
 
+from aac.validate._validation_error import ValidationError
+
 from material_model.referenced_material_exists import validate_referenced_materials
 
 from test_utils import run_validator, run_core_validate
@@ -20,9 +22,19 @@ class TestReferencedMaterialValidator(TestCase):
         
     def test_core_validate_no_bad_reference(self):
 
-        result = run_core_validate(VALID_MATERIAL_MODEL)
+        try:
+            result = run_core_validate(VALID_MATERIAL_MODEL)
+            self.assertTrue(result.is_valid(), f"Core validate function failed on a valid model. isValid = {result.is_valid()} Message = {result.get_messages_as_string()}")
+        except ValidationError:
+            self.fail(f"Unexpected validation error raised.  Received result: {result}")
 
-        self.assertTrue(result.is_valid(), f"Core validate function failed on a valid model. isValid = {result.is_valid()} Message = {result.get_messages_as_string()}")
+    def test_core_validate_bad_part_reference(self):
+
+        try:
+            result = run_core_validate(BAD_PART_MATERIAL_REFERENCE)
+            self.fail(f"Expected a validation error to be raised.  Received result: {result}")
+        except ValidationError:
+            pass
 
     def test_bad_part_reference(self):
 
